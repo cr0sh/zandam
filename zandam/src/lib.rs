@@ -36,11 +36,13 @@ pub fn encrypt(input: &str, passwd: &str) -> Vec<u8> {
 
 /// 지정된 암호문을 복호화합니다.
 #[wasm_bindgen]
-pub fn decrypt(input: &[u8], passwd: &str) -> Vec<u8> {
+pub fn decrypt(input: &[u8], passwd: &str) -> Result<Vec<u8>, JsValue> {
     let key = generate_key(passwd);
     let cipher = Aes256Cbc::new_var(&key, &AES_IV).unwrap();
 
-    cipher.decrypt_vec(input).unwrap()
+    cipher
+        .decrypt_vec(input)
+        .map_err(|_e| JsValue::from_str("복호화 실패"))
 }
 
 #[cfg(test)]
