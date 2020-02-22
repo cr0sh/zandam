@@ -57,10 +57,16 @@
     };
 
     window.dec = (function() {
+        document.getElementById("out").innerText = "복호화 시작(잠시 기다려 주세요...)";
         let password = document.getElementById("passwd").value;
         let encrypted_base64 = "${encrypted}";
-        let dec_result = decrypt(Uint8Array.from(atob(encrypted_base64), c => c.charCodeAt(0)), password);
-        downloadBlob(dec_result, "zandam.reg", "application/octet-stream");
+        try {
+            let dec_result = decrypt(Uint8Array.from(atob(encrypted_base64), c => c.charCodeAt(0)), password);
+            document.getElementById("out").innerText = "복호화 성공";
+            downloadBlob(dec_result, "zandam.reg", "application/octet-stream");
+        } catch (e) {
+            document.getElementById("out").innerText = e.toString();
+        }
     });
 </script>
 </body>
