@@ -56,7 +56,7 @@ fn main_() -> Result<(), Box<dyn Error>> {
     if !reg_output.status.success() {
         println!("레지스트리 추출이 실패하였습니다. `reg` 명령어 출력:");
         println!("{}", decode_maybe_euckr(reg_output.stderr));
-        return Err("레지스트리 추출 실패")?;
+        Err("레지스트리 추출 실패")?;
     }
 
     let registry = decode_maybe_euckr(
@@ -69,7 +69,7 @@ fn main_() -> Result<(), Box<dyn Error>> {
         prompt_password_stdout("비밀번호 다시 입력: ").expect("패스워드를 콘솔에서 읽어올 수 없음");
 
     if pass1 != pass2 {
-        return Err("두 비밀번호가 다릅니다.")?;
+        Err("두 비밀번호가 다릅니다.")?;
     }
 
     if pass1.len() < 6 {
