@@ -1,0 +1,67 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Zandam self-extractor</title>
+</head>
+<body>
+비밀번호: <input type="password" id="passwd">
+
+<button onclick="dec()">암호화 해제</button>
+
+<p id="out"></p>
+<script type="module" data-info="https://stackoverflow.com/a/43834063">let l,e,t
+        ='script',p=/(from\s+|import\s+)['"](#[\w\-]+)['"]/g,x='textContent',d=document,
+    s,o;for(o of d.querySelectorAll(t+'[type=inline-module]'))l=d.createElement(t),o
+    .id?l.id=o.id:0,l.type='module',l[x]=o[x].replace(p,(u,a,z)=>(e=d.querySelector(
+    t+z+'[type=module][src]'))?a+`/* ${z} */'${e.src}'`:u),l.src=URL.createObjectURL
+(new Blob([l[x]],{type:'application/java'+t})),console.log(l),o.replaceWith(l)//inline</script>
+
+<script type="inline-module" id="wasm-module">
+    ${js}
+</script>
+
+<script type="inline-module">
+    import init, {decrypt} from "#wasm-module";
+
+    let wasm;
+    async function run() {
+        let wasm_base64 = "${wasm}";
+        let wasm_buffer = Uint8Array.from(atob(wasm_base64), c => c.charCodeAt(0)).buffer;
+        await init(wasm_buffer);
+    }
+
+    run();
+
+    // https://stackoverflow.com/questions/25354313/saving-a-uint8array-to-a-binary-file
+    let downloadBlob = function(data, fileName, mimeType) {
+      var blob, url;
+      blob = new Blob([data], {
+        type: mimeType
+      });
+      url = window.URL.createObjectURL(blob);
+      downloadURL(url, fileName);
+      setTimeout(function() {
+        return window.URL.revokeObjectURL(url);
+      }, 1000);
+    };
+
+    let downloadURL = function(data, fileName) {
+      var a;
+      a = document.createElement('a');
+      a.href = data;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.style = 'display: none';
+      a.click();
+      a.remove();
+    };
+
+    window.dec = (function() {
+        let password = document.getElementById("passwd").value;
+        let encrypted_base64 = "${encrypted}";
+        let dec_result = decrypt(Uint8Array.from(atob(encrypted_base64), c => c.charCodeAt(0)), password);
+        downloadBlob(dec_result, "zandam.reg", "application/octet-stream");
+    });
+</script>
+</body>
+</html>

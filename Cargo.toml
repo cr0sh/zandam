@@ -1,5 +1,9 @@
 [workspace]
-
 members = [
     "zandam",
+    "zandam-pack",
 ]
+
+[profile.release]
+lto = true
+opt-level = "s"
