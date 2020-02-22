@@ -72,6 +72,10 @@ fn main_() -> Result<(), Box<dyn Error>> {
         return Err("두 비밀번호가 다릅니다.")?;
     }
 
+    if pass1.len() < 6 {
+        Err("비밀번호는 6자리 이상이어야 합니다.")?;
+    }
+
     let encrypted = zandam::encrypt(&registry, &pass1);
     let template = Template::from(HTML_TEMPLATE);
 
